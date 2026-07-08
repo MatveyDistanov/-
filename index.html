@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Секрет</title>
+    <style>
+        /* Полный сброс */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        /* ========== ЭКРАН ВВОДА КОДА ========== */
+        #codeScreen .riddle {
+            font-size: 18px;
+            font-weight: 300;
+            letter-spacing: 1px;
+            line-height: 1.8;
+            opacity: 0.8;
+            margin-bottom: 28px;
+            color: #ccc;
+            font-style: italic;
+        }
+
+        #codeScreen .riddle span {
+            color: #fff;
+            font-weight: 400;
+            letter-spacing: 2px;
+        }
+
+        #codeScreen .title {
+            font-size: 24px;
+            font-weight: 300;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            opacity: 0.7;
+        }
+
+        #codeScreen .input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+        }
+
+        #codeScreen input {
+            background: transparent;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 18px 20px;
+            font-size: 32px;
+            color: #fff;
+            width: 220px;
+            text-align: center;
+            letter-spacing: 10px;
+            outline: none;
+            transition: border-color 0.3s;
+            font-weight: 300;
+            caret-color: #fff;
+        }
+
+        #codeScreen input:focus {
+            border-color: #666;
+        }
+
+        #codeScreen .btn {
+            background: transparent;
+            border: 1px solid #555;
+            border-radius: 50px;
+            padding: 16px 48px;
+            font-size: 18px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 300;
+            width: 220px;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #codeScreen .btn:hover {
+            background: #222;
+            border-color: #888;
+        }
+
+        #codeScreen .btn:active {
+            transform: scale(0.97);
+            background: #1a1a1a;
+        }
+
+        #codeScreen .error {
+            color: #ff4444;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            height: 20px;
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        #codeScreen .error.show {
+            opacity: 1;
+        }
+
+        /* ========== ЭКРАН ТАЙМЕРА ========== */
+        #timerScreen {
+            display: none;
+        }
+
+        #timerScreen .timer-label {
+            font-size: 13px;
+            font-weight: 300;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            opacity: 0.5;
+            margin-bottom: 20px;
+        }
+
+        #timerScreen .timer {
+            font-size: 44px;
+            font-weight: 200;
+            letter-spacing: 5px;
+            color: #fff;
+            margin-bottom: 8px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        #timerScreen .timer-sub {
+            font-size: 13px;
+            font-weight: 300;
+            opacity: 0.25;
+            letter-spacing: 2px;
+        }
+
+        /* ========== ФИНАЛЬНЫЙ ЭКРАН ========== */
+        #finalScreen {
+            display: none;
+        }
+
+        #finalScreen .final-text {
+            font-size: 30px;
+            font-weight: 200;
+            letter-spacing: 3px;
+            line-height: 1.6;
+        }
+
+        #finalScreen .final-text span {
+            color: #ff3366;
+            font-weight: 400;
+            letter-spacing: 4px;
+        }
+
+        /* ========== АДАПТАЦИЯ ========== */
+        @media (max-width: 480px) {
+            #codeScreen .riddle {
+                font-size: 15px;
+                letter-spacing: 0.5px;
+            }
+            #codeScreen .title {
+                font-size: 18px;
+                letter-spacing: 3px;
+                margin-bottom: 20px;
+            }
+            #codeScreen input {
+                font-size: 28px;
+                width: 180px;
+                padding: 14px 16px;
+                letter-spacing: 8px;
+            }
+            #codeScreen .btn {
+                font-size: 15px;
+                padding: 14px 32px;
+                width: 180px;
+            }
+            #timerScreen .timer {
+                font-size: 32px;
+                letter-spacing: 3px;
+            }
+            #finalScreen .final-text {
+                font-size: 22px;
+                letter-spacing: 2px;
+            }
+            #finalScreen .final-text span {
+                letter-spacing: 3px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            #codeScreen .riddle {
+                font-size: 13px;
+            }
+            #codeScreen .title {
+                font-size: 15px;
+            }
+            #codeScreen input {
+                font-size: 22px;
+                width: 150px;
+                padding: 12px 12px;
+            }
+            #codeScreen .btn {
+                font-size: 13px;
+                padding: 12px 24px;
+                width: 150px;
+            }
+            #timerScreen .timer {
+                font-size: 26px;
+            }
+            #finalScreen .final-text {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- ЭКРАН 1: Ввод кода -->
+        <div id="codeScreen">
+            <div class="riddle">
+                ✦ Он скрыт в черных полосах,<br />
+                но <span>здесь</span> без него не войти.
+            </div>
+            <div class="title">Введите код</div>
+            <div class="input-group">
+                <input type="password" id="codeInput" maxlength="6" inputmode="numeric" autofocus />
+                <button class="btn" id="checkBtn">Проверить</button>
+            </div>
+            <div class="error" id="errorMsg">Неверный код. Попробуйте снова.</div>
+        </div>
+
+        <!-- ЭКРАН 2: Таймер -->
+        <div id="timerScreen">
+            <div class="timer-label">До важного момента осталось</div>
+            <div class="timer" id="timerDisplay">--:--:--</div>
+            <div class="timer-sub">дней · часов · минут · секунд</div>
+        </div>
+
+        <!-- ЭКРАН 3: Финальное сообщение -->
+        <div id="finalScreen">
+            <div class="final-text">Напиши мне свой<br /><span>любимый цвет</span></div>
+        </div>
+
+    </div>
+
+    <script>
+        // ============================================================
+        // НАСТРОЙКИ
+        // ============================================================
+        const CORRECT_CODE = '154771';
+        const TARGET_DATE = new Date('2027-03-21T00:00:00').getTime();
+
+        // ============================================================
+        // ЭЛЕМЕНТЫ
+        // ============================================================
+        const codeScreen = document.getElementById('codeScreen');
+        const timerScreen = document.getElementById('timerScreen');
+        const finalScreen = document.getElementById('finalScreen');
+        const codeInput = document.getElementById('codeInput');
+        const checkBtn = document.getElementById('checkBtn');
+        const errorMsg = document.getElementById('errorMsg');
+        const timerDisplay = document.getElementById('timerDisplay');
+
+        let timerInterval = null;
+
+        // ============================================================
+        // ПРОВЕРКА КОДА
+        // ============================================================
+        function checkCode() {
+            const value = codeInput.value.trim();
+
+            if (value.length === 0) {
+                errorMsg.textContent = 'Введите код';
+                errorMsg.classList.add('show');
+                return;
+            }
+
+            if (value === CORRECT_CODE) {
+                codeScreen.style.display = 'none';
+                timerScreen.style.display = 'block';
+                startTimer();
+            } else {
+                errorMsg.textContent = 'Неверный код. Попробуйте снова.';
+                errorMsg.classList.add('show');
+                codeInput.value = '';
+                codeInput.focus();
+            }
+        }
+
+        // ============================================================
+        // СОБЫТИЯ
+        // ============================================================
+        checkBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            checkCode();
+        });
+
+        codeInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                checkCode();
+            }
+        });
+
+        codeInput.addEventListener('input', function () {
+            errorMsg.classList.remove('show');
+        });
+
+        // ============================================================
+        // ТАЙМЕР
+        // ============================================================
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+
+            timerInterval = setInterval(function () {
+                const now = Date.now();
+                let diff = TARGET_DATE - now;
+
+                if (diff <= 0) {
+                    clearInterval(timerInterval);
+                    timerScreen.style.display = 'none';
+                    finalScreen.style.display = 'block';
+                    return;
+                }
+
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                diff -= days * (1000 * 60 * 60 * 24);
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                diff -= hours * (1000 * 60 * 60);
+                const minutes = Math.floor(diff / (1000 * 60));
+                diff -= minutes * (1000 * 60);
+                const seconds = Math.floor(diff / 1000);
+
+                timerDisplay.textContent =
+                    String(days).padStart(2, '0') + ':' +
+                    String(hours).padStart(2, '0') + ':' +
+                    String(minutes).padStart(2, '0') + ':' +
+                    String(seconds).padStart(2, '0');
+            }, 1000);
+        }
+
+        // ============================================================
+        // ФОКУС
+        // ============================================================
+        window.addEventListener('load', function () {
+            setTimeout(function () {
+                codeInput.focus();
+            }, 400);
+        });
+
+        document.addEventListener('click', function () {
+            if (codeScreen.style.display !== 'none') {
+                if (document.activeElement !== checkBtn) {
+                    codeInput.focus();
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
